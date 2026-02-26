@@ -38,6 +38,7 @@ const Products = () => {
                 <div style={{
                     position: 'relative',
                     maxWidth: '500px',
+                    width: 'calc(100% - 2rem)',
                     margin: '0 auto 2.5rem',
                 }}>
                     <input
