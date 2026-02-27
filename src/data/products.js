@@ -50,6 +50,25 @@ export const products = [
       { size: "5ml", price: 1200 },
       { size: "10ml", price: 2200 }
     ]
+  },
+  {
+    id: 4,
+    name: "Aventus",
+    brand: "Creed",
+    type: "original",
+    category: "originals",
+    currency: "DA",
+    description: "Un échantillon de 5ml du parfum original Dior Sauvage, parfait pour tester.",
+    images: [
+      "https://fimgs.net/mdimg/perfume-thumbs/dark-375x500.9828.avif",
+      "https://fimgs.net/mdimg/perfume-social-cards/fr-p_c_9828.jpeg"
+    ],
+    volumes: [
+      { size: "100ml", price: 65000 },
+      { size: "200ml", price: 95000 },
+      { size: "300ml", price: 125000 },
+      { size: "400ml", price: 155000 }
+    ]
   }
 ];
 
