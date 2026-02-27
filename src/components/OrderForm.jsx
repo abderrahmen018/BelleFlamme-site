@@ -88,7 +88,7 @@ const OrderForm = ({ product }) => {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
                 {/* SHIPPING INFO */}
                 <div>
-                    <label style={{ display: 'block', marginBottom: '1.5rem', fontSize: '0.85rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    <label style={{ display: 'block', marginBottom: '1rem', fontSize: '0.85rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                         {isAr ? 'معلومات الشحن' : 'Informations de livraison'}
                     </label>
 
@@ -183,7 +183,7 @@ const OrderForm = ({ product }) => {
                         </div>
 
                         {/* VARIANT SELECTION (Moved here) */}
-                        <div style={{ marginTop: '0.5rem' }}>
+                        <div style={{ marginTop: '0rem' }}>
                             <label style={{ display: 'block', marginBottom: '1rem', fontSize: '0.85rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                                 {isAr ? 'اختر الحجم' : 'Choisir le format'}
                             </label>
@@ -194,7 +194,7 @@ const OrderForm = ({ product }) => {
                                         type="button"
                                         onClick={() => setSelectedVariant(vol.size)}
                                         style={{
-                                            padding: '1rem',
+                                            padding: '0.9rem',
                                             borderRadius: 'var(--radius-sm)',
                                             border: '2px solid',
                                             borderColor: selectedVariant === vol.size ? 'var(--black)' : 'var(--border-color)',
