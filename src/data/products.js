@@ -8,7 +8,11 @@ export const products = [
     price: 15000,
     currency: "DA",
     description: "Un parfum boisé-aromatique pour homme qui allie fraîcheur et intensité.",
-    images: ["https://images.unsplash.com/photo-1541602240222-df4ed52cd370?q=80&w=800"],
+    images: [
+      "https://images.unsplash.com/photo-1541602240222-df4ed52cd370?q=80&w=800",
+      "https://images.unsplash.com/photo-1594035910387-fea47794261f?q=80&w=800",
+      "https://images.unsplash.com/photo-1563170351-be82bc888aa4?q=80&w=800"
+    ],
     volumes: ["50ml", "100ml"]
   },
   {
@@ -20,7 +24,10 @@ export const products = [
     price: 4500,
     currency: "DA",
     description: "Une inspiration fidèle du célèbre Creed Aventus avec des notes d'ananas et de bouleau.",
-    images: ["https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=800"],
+    images: [
+      "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?q=80&w=800",
+      "https://images.unsplash.com/photo-1557170334-a7c3a4f22038?q=80&w=800"
+    ],
     volumes: ["50ml", "100ml"]
   },
   {
@@ -32,7 +39,10 @@ export const products = [
     price: 1200,
     currency: "DA",
     description: "Un échantillon de 5ml du parfum original Dior Sauvage, parfait pour tester.",
-    images: ["https://images.unsplash.com/photo-1512132411229-c30391241dd8?q=80&w=800"],
+    images: [
+      "https://images.unsplash.com/photo-1512132411229-c30391241dd8?q=80&w=800",
+      "https://images.unsplash.com/photo-1523293182086-7651a899d37f?q=80&w=800"
+    ],
     volumes: ["5ml", "10ml"]
   }
 ];

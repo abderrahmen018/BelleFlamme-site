@@ -12,8 +12,6 @@ const Products = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const categoryFilter = searchParams.get('category') || 'all';
     const [searchQuery, setSearchQuery] = useState('');
-    const [selectedProduct, setSelectedProduct] = useState(null);
-    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const filteredProducts = products.filter(product => {
         const matchesCategory = categoryFilter === 'all' || product.category === categoryFilter;
@@ -21,11 +19,6 @@ const Products = () => {
             product.brand.toLowerCase().includes(searchQuery.toLowerCase());
         return matchesCategory && matchesSearch;
     });
-
-    const handleOrderClick = (product) => {
-        setSelectedProduct(product);
-        setIsModalOpen(true);
-    };
 
     return (
         <div className="container section-padding">
@@ -111,16 +104,9 @@ const Products = () => {
                     <ProductCard
                         key={product.id}
                         product={product}
-                        onOrderClick={handleOrderClick}
                     />
                 ))}
             </div>
-
-            <OrderModal
-                isOpen={isModalOpen}
-                onClose={() => setIsModalOpen(false)}
-                product={selectedProduct}
-            />
         </div>
     );
 };

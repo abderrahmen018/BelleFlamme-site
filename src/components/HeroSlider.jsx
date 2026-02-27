@@ -71,7 +71,8 @@ const HeroSlider = () => {
                             animate={{ y: 0, opacity: 1 }}
                             transition={{ delay: 0.9, duration: 0.8 }}
                             className="btn"
-                            style={{ border: '1px solid white', color: 'white' }}
+                            style={{ border: '1px solid white', color: 'white', cursor: 'pointer' }}
+                            onClick={() => window.location.href = '/produits'}
                         >
                             {t('hero.cta')}
                         </motion.button>
