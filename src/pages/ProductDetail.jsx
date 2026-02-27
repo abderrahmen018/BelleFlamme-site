@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { products } from '../data/products';
 import { useTranslation } from 'react-i18next';
@@ -56,6 +56,17 @@ const ProductDetail = () => {
     const [openAccordion, setOpenAccordion] = useState('description');
 
     const carouselRef = useRef(null);
+    const orderFormRef = useRef(null);
+    const [showCTA, setShowCTA] = useState(true);
+
+    useEffect(() => {
+        const observer = new IntersectionObserver(
+            ([entry]) => setShowCTA(!entry.isIntersecting),
+            { threshold: 0.15 }
+        );
+        if (orderFormRef.current) observer.observe(orderFormRef.current);
+        return () => observer.disconnect();
+    }, []);
 
     if (!product) return <div className="container section-padding">Product not found</div>;
 
@@ -68,7 +79,7 @@ const ProductDetail = () => {
 
     return (
         <div style={{ backgroundColor: 'var(--white)', minHeight: '100vh' }}>
-            <div className="container" style={{ paddingTop: '2rem' }}>
+            <div className="container product-detail-container" style={{ paddingTop: '2rem' }}>
                 <motion.button
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -216,7 +227,9 @@ const ProductDetail = () => {
                         </div>
 
                         {/* Integrated Selection & Order Form */}
-                        <OrderForm product={product} />
+                        <div ref={orderFormRef}>
+                            <OrderForm product={product} />
+                        </div>
 
                         {/* Accordions */}
                         <div style={{ marginTop: '1rem' }}>
@@ -259,8 +272,63 @@ const ProductDetail = () => {
                             font-size: 2.5rem !important;
                         }
                     }
+                    .product-detail-container {
+                        padding-left: 15rem;
+                        padding-right: 15rem;
+                    }
+                    @media (max-width: 1100px) {
+                        .product-detail-container {
+                            padding-left: 5rem;
+                            padding-right: 5rem;
+                        }
+                    }
+                    @media (max-width: 900px) {
+                        .product-detail-container {
+                            padding-left: 1.5rem;
+                            padding-right: 1.5rem;
+                        }
+                    }
                 `}
             </style>
+
+            {/* Floating CTA Button */}
+            <AnimatePresence>
+                {showCTA && (
+                    <div style={{
+                        position: 'fixed',
+                        bottom: '1.75rem',
+                        left: 0,
+                        right: 0,
+                        display: 'flex',
+                        justifyContent: 'center',
+                        zIndex: 100,
+                        pointerEvents: 'none',
+                    }}>
+                        <motion.button
+                            initial={{ y: 80, opacity: 0 }}
+                            animate={{ y: 0, opacity: 1 }}
+                            exit={{ y: 80, opacity: 0 }}
+                            transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+                            onClick={() => orderFormRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                            style={{
+                                pointerEvents: 'auto',
+                                backgroundColor: 'var(--black)',
+                                color: 'var(--white)',
+                                padding: '1rem 2.5rem',
+                                borderRadius: '100px',
+                                fontSize: '0.95rem',
+                                fontWeight: 700,
+                                letterSpacing: '0.04em',
+                                boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
+                                cursor: 'pointer',
+                                whiteSpace: 'nowrap',
+                            }}
+                        >
+                            ✔ Confirmer ma commande
+                        </motion.button>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };
