@@ -58,7 +58,7 @@ const ProductCard = ({ product }) => {
                         fontWeight: 700,
                         borderRadius: '4px',
                     }}>
-                        {product.price.toLocaleString()} {product.currency}
+                        {product.volumes[0].price.toLocaleString()} {product.currency}
                     </div>
                 </div>
 

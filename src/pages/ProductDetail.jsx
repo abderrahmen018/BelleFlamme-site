@@ -194,7 +194,7 @@ const ProductDetail = () => {
                             }}>{product.brand}</h4>
                             <h1 className="font-serif" style={{ fontSize: '3.5rem', lineHeight: 1, marginBottom: '1.5rem' }}>{product.name}</h1>
                             <div style={{ display: 'flex', alignItems: 'baseline', gap: '1rem' }}>
-                                <span style={{ fontSize: '2.25rem', fontWeight: 700 }}>{product.price.toLocaleString()} {product.currency}</span>
+                                <span style={{ fontSize: '2.25rem', fontWeight: 700 }}>{product.volumes[0].price.toLocaleString()} {product.currency}</span>
                             </div>
                         </div>
 

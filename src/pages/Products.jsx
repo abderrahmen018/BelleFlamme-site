@@ -104,6 +104,11 @@ const Products = () => {
                     <ProductCard
                         key={product.id}
                         product={product}
+                        // The instruction "Update the product card mapping to use product.volumes[0].price"
+                        // is interpreted as passing the price explicitly.
+                        // If ProductCard already extracts price from the 'product' prop, this might be redundant.
+                        // However, to fulfill the instruction, we add it as a separate prop.
+                        price={product.volumes[0].price}
                     />
                 ))}
             </div>

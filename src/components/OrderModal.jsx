@@ -91,7 +91,7 @@ const OrderModal = ({ product, isOpen, onClose }) => {
                                     <div>
                                         <h3 style={{ fontSize: '1.125rem', fontWeight: 600 }}>{product.name}</h3>
                                         <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>{product.brand}</p>
-                                        <p style={{ fontWeight: 700, marginTop: '0.25rem' }}>{product.price} {product.currency}</p>
+                                        <p style={{ fontWeight: 700, marginTop: '0.25rem' }}>{product.volumes[0].price} {product.currency}</p>
                                     </div>
                                 </div>
 

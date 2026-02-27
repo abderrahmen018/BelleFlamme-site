@@ -12,12 +12,23 @@ const WILAYAS = [
     // Add more as needed or keep it simple for now
 ];
 
+const SHIPPING_FEES = {
+    'Alger': 400,
+    'Blida': 600,
+    'Tipaza': 600,
+    'Boumerdès': 600,
+    'Oran': 800,
+    'Constantine': 800,
+    'Sétif': 800,
+    'default': 900
+};
+
 const OrderForm = ({ product }) => {
     const { i18n } = useTranslation();
     const isAr = i18n.language === 'ar';
 
     const [submitted, setSubmitted] = useState(false);
-    const [selectedVariant, setSelectedVariant] = useState(product?.volumes?.[0] || '');
+    const [selectedVariant, setSelectedVariant] = useState(product?.volumes?.[0]?.size || '');
     const [formData, setFormData] = useState({
         name: '',
         phone: '',
@@ -26,11 +37,22 @@ const OrderForm = ({ product }) => {
         quantity: 1
     });
 
-    const totalPrice = product.price * formData.quantity;
+    const variantData = product.volumes.find(v => v.size === selectedVariant) || product.volumes[0];
+    const shippingFee = SHIPPING_FEES[formData.wilaya] || (formData.wilaya ? SHIPPING_FEES['default'] : 0);
+    const subtotal = variantData.price * formData.quantity;
+    const totalPrice = subtotal + shippingFee;
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('Order Submitted:', { product, variant: selectedVariant, ...formData });
+        console.log('Order Submitted:', {
+            product,
+            variant: selectedVariant,
+            price: variantData.price,
+            subtotal,
+            shipping: shippingFee,
+            total: totalPrice,
+            ...formData
+        });
         setSubmitted(true);
     };
 
@@ -155,7 +177,7 @@ const OrderForm = ({ product }) => {
                             >
                                 <option value="">{isAr ? 'الولاية' : 'Wilaya'}</option>
                                 {WILAYAS.map(w => (
-                                    <option key={w.id} value={w.name}>{w.id} - {w.name}</option>
+                                    <option key={w.name} value={w.name}>{w.id} - {w.name}</option>
                                 ))}
                             </select>
                         </div>
@@ -184,27 +206,33 @@ const OrderForm = ({ product }) => {
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
                             {product.volumes.map(vol => (
                                 <button
-                                    key={vol}
+                                    key={vol.size}
                                     type="button"
-                                    onClick={() => setSelectedVariant(vol)}
+                                    onClick={() => setSelectedVariant(vol.size)}
                                     style={{
                                         padding: '1.25rem',
                                         borderRadius: 'var(--radius-sm)',
                                         border: '2px solid',
-                                        borderColor: selectedVariant === vol ? 'var(--black)' : 'var(--border-color)',
-                                        backgroundColor: selectedVariant === vol ? 'var(--black)' : 'var(--white)',
-                                        color: selectedVariant === vol ? 'var(--white)' : 'var(--black)',
+                                        borderColor: selectedVariant === vol.size ? 'var(--black)' : 'var(--border-color)',
+                                        backgroundColor: selectedVariant === vol.size ? 'var(--black)' : 'var(--white)',
+                                        color: selectedVariant === vol.size ? 'var(--white)' : 'var(--black)',
                                         fontWeight: 700,
                                         fontSize: '0.95rem',
                                         display: 'flex',
+                                        flexDirection: 'column',
                                         alignItems: 'center',
                                         justifyContent: 'center',
-                                        gap: '0.5rem',
+                                        gap: '0.25rem',
                                         transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)'
                                     }}
                                 >
-                                    <Package size={18} />
-                                    {vol}
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                        <Package size={18} />
+                                        {vol.size}
+                                    </div>
+                                    <div style={{ fontSize: '0.8rem', opacity: 0.8 }}>
+                                        {vol.price.toLocaleString()} {product.currency}
+                                    </div>
                                 </button>
                             ))}
                         </div>
@@ -220,6 +248,7 @@ const OrderForm = ({ product }) => {
                         flexDirection: 'column',
                         gap: '1rem'
                     }}>
+                        {/* Quantity Row */}
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>{isAr ? 'الكمية' : 'Quantité'}</span>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -228,9 +257,28 @@ const OrderForm = ({ product }) => {
                                 <button type="button" onClick={() => setFormData(f => ({ ...f, quantity: f.quantity + 1 }))} style={{ width: '30px', height: '30px', border: '1px solid var(--border-color)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
                             </div>
                         </div>
+
                         <div style={{ height: '1px', backgroundColor: 'var(--border-color)' }}></div>
+
+                        {/* Subtotal */}
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.9rem' }}>
+                            <span style={{ color: 'var(--text-secondary)' }}>{isAr ? 'سعر المنتوج' : 'Prix du produit'}</span>
+                            <span style={{ fontWeight: 600 }}>{subtotal.toLocaleString()} {product.currency}</span>
+                        </div>
+
+                        {/* Shipping */}
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.9rem' }}>
+                            <span style={{ color: 'var(--text-secondary)' }}>{isAr ? 'سعر التوصيل' : 'Frais de livraison'}</span>
+                            <span style={{ fontWeight: 600, color: shippingFee === 0 ? 'var(--text-secondary)' : 'inherit' }}>
+                                {shippingFee > 0 ? `${shippingFee.toLocaleString()} ${product.currency}` : (isAr ? 'اختر الولاية' : 'Choisir Wilaya')}
+                            </span>
+                        </div>
+
+                        <div style={{ height: '1px', backgroundColor: 'var(--black)', opacity: 0.1 }}></div>
+
+                        {/* Total */}
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                            <span style={{ fontWeight: 600 }}>Total</span>
+                            <span style={{ fontWeight: 700 }}>Total</span>
                             <span style={{ fontWeight: 800, fontSize: '1.4rem' }}>{totalPrice.toLocaleString()} {product.currency}</span>
                         </div>
                     </div>
