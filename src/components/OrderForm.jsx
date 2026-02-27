@@ -101,7 +101,7 @@ const OrderForm = ({ product }) => {
                             placeholder={isAr ? 'الاسم الكامل *' : 'Nom Complet *'}
                             style={{
                                 width: '100%',
-                                padding: '1.2rem 3rem',
+                                padding: '1.1rem 3rem',
                                 paddingRight: isAr ? '1.2rem' : '3rem',
                                 paddingLeft: isAr ? '3rem' : '1.2rem',
                                 borderRadius: 'var(--radius-sm)',
@@ -124,7 +124,7 @@ const OrderForm = ({ product }) => {
                             placeholder={isAr ? 'رقم الهاتف *' : 'Numéro de téléphone *'}
                             style={{
                                 width: '100%',
-                                padding: '1.2rem 3rem',
+                                padding: '1.1rem 3rem',
                                 paddingRight: isAr ? '1.2rem' : '3rem',
                                 paddingLeft: isAr ? '3rem' : '1.2rem',
                                 borderRadius: 'var(--radius-sm)',
@@ -145,7 +145,7 @@ const OrderForm = ({ product }) => {
                                 required
                                 style={{
                                     width: '100%',
-                                    padding: '1.2rem 3rem',
+                                    padding: '1.1rem 3rem',
                                     paddingRight: isAr ? '1.2rem' : '3rem',
                                     paddingLeft: isAr ? '3rem' : '1.2rem',
                                     borderRadius: 'var(--radius-sm)',
@@ -170,7 +170,7 @@ const OrderForm = ({ product }) => {
                             placeholder={isAr ? 'البلدية/المدينة' : 'Commune/Ville'}
                             style={{
                                 width: '100%',
-                                padding: '1.2rem 1.5rem',
+                                padding: '1.1rem 1.5rem',
                                 borderRadius: 'var(--radius-sm)',
                                 border: '1px solid var(--border-color)',
                                 backgroundColor: '#F9F9FB',
@@ -182,7 +182,7 @@ const OrderForm = ({ product }) => {
                     </div>
 
                     {/* VARIANT SELECTION (Moved here) */}
-                    <div style={{ marginTop: '1rem' }}>
+                    <div style={{ marginTop: '0.5rem' }}>
                         <label style={{ display: 'block', marginBottom: '1rem', fontSize: '0.85rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
                             {isAr ? 'اختر الحجم' : 'Choisir le format'}
                         </label>
@@ -193,7 +193,7 @@ const OrderForm = ({ product }) => {
                                     type="button"
                                     onClick={() => setSelectedVariant(vol.size)}
                                     style={{
-                                        padding: '1.25rem',
+                                        padding: '1rem',
                                         borderRadius: 'var(--radius-sm)',
                                         border: '2px solid',
                                         borderColor: selectedVariant === vol.size ? 'var(--black)' : 'var(--border-color)',
