@@ -1,27 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { User, Phone, MapPin, ShoppingCart, CheckCircle, Package } from 'lucide-react';
+import { WILAYAS, SHIPPING_FEES } from '../data/shipping';
 
-const WILAYAS = [
-    { id: '1', name: 'Adrar' }, { id: '2', name: 'Chlef' }, { id: '3', name: 'Laghouat' },
-    { id: '4', name: 'Oum El Bouaghi' }, { id: '5', name: 'Batna' }, { id: '6', name: 'Béjaïa' },
-    { id: '7', name: 'Biskra' }, { id: '8', name: 'Béchar' }, { id: '9', name: 'Blida' },
-    { id: '16', name: 'Alger' }, { id: '19', name: 'Sétif' }, { id: '25', name: 'Constantine' },
-    { id: '31', name: 'Oran' }, { id: '35', name: 'Boumerdès' }, { id: '42', name: 'Tipaza' }
-    // Add more as needed or keep it simple for now
-];
 
-const SHIPPING_FEES = {
-    'Alger': 400,
-    'Blida': 600,
-    'Tipaza': 600,
-    'Boumerdès': 600,
-    'Oran': 800,
-    'Constantine': 800,
-    'Sétif': 800,
-    'default': 900
-};
 
 const OrderForm = ({ product }) => {
     const { i18n } = useTranslation();
