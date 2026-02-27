@@ -1,171 +1,264 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { User, Phone, MapPin, ShoppingCart, CheckCircle, Package } from 'lucide-react';
 
-const OrderForm = ({ product, variation }) => {
+const WILAYAS = [
+    { id: '1', name: 'Adrar' }, { id: '2', name: 'Chlef' }, { id: '3', name: 'Laghouat' },
+    { id: '4', name: 'Oum El Bouaghi' }, { id: '5', name: 'Batna' }, { id: '6', name: 'Béjaïa' },
+    { id: '7', name: 'Biskra' }, { id: '8', name: 'Béchar' }, { id: '9', name: 'Blida' },
+    { id: '16', name: 'Alger' }, { id: '19', name: 'Sétif' }, { id: '25', name: 'Constantine' },
+    { id: '31', name: 'Oran' }, { id: '35', name: 'Boumerdès' }, { id: '42', name: 'Tipaza' }
+    // Add more as needed or keep it simple for now
+];
+
+const OrderForm = ({ product }) => {
     const { i18n } = useTranslation();
+    const isAr = i18n.language === 'ar';
+
     const [submitted, setSubmitted] = useState(false);
+    const [selectedVariant, setSelectedVariant] = useState(product?.volumes?.[0] || '');
     const [formData, setFormData] = useState({
         name: '',
         phone: '',
-        address: '',
+        wilaya: '',
+        city: '',
         quantity: 1
     });
 
-    const isAr = i18n.language === 'ar';
+    const totalPrice = product.price * formData.quantity;
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log('Order Submitted:', { product, variation, ...formData });
+        console.log('Order Submitted:', { product, variant: selectedVariant, ...formData });
         setSubmitted(true);
     };
 
     if (submitted) {
         return (
             <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
                 style={{
                     padding: '3rem 2rem',
                     textAlign: 'center',
-                    background: '#F8FAF8',
+                    background: '#F0FDF4',
                     borderRadius: 'var(--radius)',
-                    border: '1px solid #E6EEE6',
+                    border: '1px solid #BBF7D0',
                     marginTop: '2rem'
                 }}
             >
                 <div style={{
-                    width: '60px',
-                    height: '60px',
-                    backgroundColor: '#E6F4EA',
+                    width: '64px',
+                    height: '64px',
+                    backgroundColor: '#4ADE80',
                     borderRadius: '50%',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     margin: '0 auto 1.5rem',
-                    color: '#1E7E34'
+                    color: 'white'
                 }}>
-                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                    <CheckCircle size={32} />
                 </div>
-                <h3 style={{ color: '#1A1A1A', marginBottom: '0.75rem', fontSize: '1.25rem' }}>
-                    {isAr ? 'تم استلام طلبك!' : 'Merci pour votre commande !'}
+                <h3 style={{ color: '#166534', marginBottom: '0.75rem', fontSize: '1.5rem', fontWeight: 700 }}>
+                    {isAr ? 'تم استلام طلبك!' : 'Commande Réussie !'}
                 </h3>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>
-                    {isAr ? 'سنتصل بك قريباً لتأكيد التفاصيل.' : 'Nous vous contacterons bientôt pour confirmer les détails.'}
+                <p style={{ color: '#166534', fontSize: '1rem', lineHeight: 1.5 }}>
+                    {isAr ? 'شكراً لثقتكم. سنتصل بك قريباً لتأكيد الطلب.' : 'Merci pour votre confiance. Notre équipe vous contactera sous peu.'}
                 </p>
                 <button
                     onClick={() => setSubmitted(false)}
-                    className="btn btn-outline"
-                    style={{ marginTop: '2rem', width: '100%' }}
+                    className="btn btn-black"
+                    style={{ marginTop: '2rem', width: '100%', borderRadius: '50px' }}
                 >
-                    {isAr ? 'طلب جديد' : 'Nouvelle commande'}
+                    {isAr ? 'إجراء طلب آخر' : 'Nouvelle commande'}
                 </button>
             </motion.div>
         );
     }
 
     return (
-        <div style={{
-            marginTop: '1rem',
-            paddingTop: '2rem',
-            borderTop: '1px solid var(--border-color)'
-        }}>
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                    <div style={{ gridColumn: 'span 2' }}>
-                        <label style={{ display: 'block', marginBottom: '0.6rem', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                            {isAr ? 'الاسم الكامل' : 'Nom Complet'}
-                        </label>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+            {/* SHIPPING INFO */}
+            <div>
+                <label style={{ display: 'block', marginBottom: '1.5rem', fontSize: '0.85rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                    {isAr ? 'معلومات الشحن' : 'Informations de livraison'}
+                </label>
+
+                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                    {/* Name */}
+                    <div style={{ position: 'relative' }}>
+                        <User size={18} style={{ position: 'absolute', right: isAr ? 'unset' : '1rem', left: isAr ? '1rem' : 'unset', top: '50%', transform: 'translateY(-50%)', color: 'var(--medium-gray)' }} />
                         <input
                             type="text"
                             required
-                            placeholder={isAr ? 'أدخل اسمك...' : 'Votre nom...'}
+                            placeholder={isAr ? 'الاسم الكامل *' : 'Nom Complet *'}
                             style={{
                                 width: '100%',
-                                padding: '1rem',
+                                padding: '1.2rem 3rem',
+                                paddingRight: isAr ? '1.2rem' : '3rem',
+                                paddingLeft: isAr ? '3rem' : '1.2rem',
                                 borderRadius: 'var(--radius-sm)',
                                 border: '1px solid var(--border-color)',
-                                backgroundColor: '#FAFAFA',
-                                fontSize: '1rem'
+                                backgroundColor: '#F9F9FB',
+                                fontSize: '1rem',
+                                transition: 'border-color 0.2s ease'
                             }}
                             value={formData.name}
                             onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                         />
                     </div>
-                    <div>
-                        <label style={{ display: 'block', marginBottom: '0.6rem', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                            {isAr ? 'رقم الهاتف' : 'Téléphone'}
-                        </label>
+
+                    {/* Phone */}
+                    <div style={{ position: 'relative' }}>
+                        <Phone size={18} style={{ position: 'absolute', right: isAr ? 'unset' : '1rem', left: isAr ? '1rem' : 'unset', top: '50%', transform: 'translateY(-50%)', color: 'var(--medium-gray)' }} />
                         <input
                             type="tel"
                             required
-                            placeholder="05XX XX XX XX"
+                            placeholder={isAr ? 'رقم الهاتف *' : 'Numéro de téléphone *'}
                             style={{
                                 width: '100%',
-                                padding: '1rem',
+                                padding: '1.2rem 3rem',
+                                paddingRight: isAr ? '1.2rem' : '3rem',
+                                paddingLeft: isAr ? '3rem' : '1.2rem',
                                 borderRadius: 'var(--radius-sm)',
                                 border: '1px solid var(--border-color)',
-                                backgroundColor: '#FAFAFA',
+                                backgroundColor: '#F9F9FB',
                                 fontSize: '1rem'
                             }}
                             value={formData.phone}
                             onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                         />
                     </div>
-                    <div>
-                        <label style={{ display: 'block', marginBottom: '0.6rem', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                            {isAr ? 'الكمية' : 'Quantité'}
-                        </label>
+
+                    {/* Location Row */}
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                        <div style={{ position: 'relative' }}>
+                            <MapPin size={18} style={{ position: 'absolute', right: isAr ? 'unset' : '1rem', left: isAr ? '1rem' : 'unset', top: '50%', transform: 'translateY(-50%)', color: 'var(--medium-gray)', pointerEvents: 'none' }} />
+                            <select
+                                required
+                                style={{
+                                    width: '100%',
+                                    padding: '1.2rem 3rem',
+                                    paddingRight: isAr ? '1.2rem' : '3rem',
+                                    paddingLeft: isAr ? '3rem' : '1.2rem',
+                                    borderRadius: 'var(--radius-sm)',
+                                    border: '1px solid var(--border-color)',
+                                    backgroundColor: '#F9F9FB',
+                                    fontSize: '0.95rem',
+                                    appearance: 'none',
+                                    cursor: 'pointer'
+                                }}
+                                value={formData.wilaya}
+                                onChange={(e) => setFormData({ ...formData, wilaya: e.target.value })}
+                            >
+                                <option value="">{isAr ? 'الولاية' : 'Wilaya'}</option>
+                                {WILAYAS.map(w => (
+                                    <option key={w.id} value={w.name}>{w.id} - {w.name}</option>
+                                ))}
+                            </select>
+                        </div>
                         <input
-                            type="number"
-                            min="1"
+                            type="text"
                             required
+                            placeholder={isAr ? 'البلدية/المدينة' : 'Commune/Ville'}
                             style={{
                                 width: '100%',
-                                padding: '1rem',
+                                padding: '1.2rem 1.5rem',
                                 borderRadius: 'var(--radius-sm)',
                                 border: '1px solid var(--border-color)',
-                                backgroundColor: '#FAFAFA',
-                                fontSize: '1rem'
+                                backgroundColor: '#F9F9FB',
+                                fontSize: '0.95rem'
                             }}
-                            value={formData.quantity}
-                            onChange={(e) => setFormData({ ...formData, quantity: parseInt(e.target.value) || 1 })}
+                            value={formData.city}
+                            onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                         />
                     </div>
-                </div>
-                <div>
-                    <label style={{ display: 'block', marginBottom: '0.6rem', fontSize: '0.8rem', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                        {isAr ? 'عنوان التسليم' : 'Adresse de livraison'}
-                    </label>
-                    <textarea
-                        required
-                        placeholder={isAr ? 'أدخل عنوانك بالتفصيل (الولاية، المدينة...)' : 'Votre adresse complète...'}
-                        rows="3"
-                        style={{
-                            width: '100%',
-                            padding: '1rem',
-                            borderRadius: 'var(--radius-sm)',
-                            border: '1px solid var(--border-color)',
-                            backgroundColor: '#FAFAFA',
-                            fontSize: '1rem',
-                            lineHeight: 1.5,
-                            resize: 'none'
-                        }}
-                        value={formData.address}
-                        onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                    ></textarea>
-                </div>
-                <button type="submit" className="btn btn-black" style={{
-                    marginTop: '0.5rem',
-                    width: '100%',
-                    padding: '1.25rem',
-                    fontSize: '1rem',
-                    fontWeight: 700,
-                    borderRadius: '50px'
-                }}>
-                    {isAr ? 'تأكيد الطلب الآن' : 'Commander Maintenant'}
-                </button>
-            </form>
+
+                    {/* VARIANT SELECTION (Moved here) */}
+                    <div style={{ marginTop: '1rem' }}>
+                        <label style={{ display: 'block', marginBottom: '1rem', fontSize: '0.85rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                            {isAr ? 'اختر الحجم' : 'Choisir le format'}
+                        </label>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
+                            {product.volumes.map(vol => (
+                                <button
+                                    key={vol}
+                                    type="button"
+                                    onClick={() => setSelectedVariant(vol)}
+                                    style={{
+                                        padding: '1.25rem',
+                                        borderRadius: 'var(--radius-sm)',
+                                        border: '2px solid',
+                                        borderColor: selectedVariant === vol ? 'var(--black)' : 'var(--border-color)',
+                                        backgroundColor: selectedVariant === vol ? 'var(--black)' : 'var(--white)',
+                                        color: selectedVariant === vol ? 'var(--white)' : 'var(--black)',
+                                        fontWeight: 700,
+                                        fontSize: '0.95rem',
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                        gap: '0.5rem',
+                                        transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)'
+                                    }}
+                                >
+                                    <Package size={18} />
+                                    {vol}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Quantity & Summary */}
+                    <div style={{
+                        marginTop: '1rem',
+                        padding: '1.5rem',
+                        background: 'var(--light-gray)',
+                        borderRadius: 'var(--radius-sm)',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        gap: '1rem'
+                    }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>{isAr ? 'الكمية' : 'Quantité'}</span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                                <button type="button" onClick={() => setFormData(f => ({ ...f, quantity: Math.max(1, f.quantity - 1) }))} style={{ width: '30px', height: '30px', border: '1px solid var(--border-color)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>-</button>
+                                <span style={{ fontWeight: 700 }}>{formData.quantity}</span>
+                                <button type="button" onClick={() => setFormData(f => ({ ...f, quantity: f.quantity + 1 }))} style={{ width: '30px', height: '30px', border: '1px solid var(--border-color)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
+                            </div>
+                        </div>
+                        <div style={{ height: '1px', backgroundColor: 'var(--border-color)' }}></div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span style={{ fontWeight: 600 }}>Total</span>
+                            <span style={{ fontWeight: 800, fontSize: '1.4rem' }}>{totalPrice.toLocaleString()} {product.currency}</span>
+                        </div>
+                    </div>
+
+                    {/* Submit Button */}
+                    <button type="submit" className="btn btn-black" style={{
+                        marginTop: '1rem',
+                        width: '100%',
+                        padding: '1.4rem',
+                        fontSize: '1.1rem',
+                        fontWeight: 800,
+                        borderRadius: 'var(--radius-sm)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '1rem',
+                        boxShadow: '0 10px 20px rgba(0,0,0,0.1)'
+                    }}>
+                        {isAr ? 'تأكيد الطلب الآن' : 'Confirmer ma Commande'}
+                        <ShoppingCart size={20} />
+                    </button>
+
+                    <div style={{ textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}>
+                        <div style={{ width: '8px', height: '8px', backgroundColor: '#10B981', borderRadius: '50%' }}></div>
+                        {isAr ? 'الدفع عند الاستلام (COD)' : 'Paiement à la livraison (Cash on Delivery)'}
+                    </div>
+                </form>
+            </div>
         </div>
     );
 };

@@ -52,7 +52,6 @@ const ProductDetail = () => {
     const navigate = useNavigate();
     const { t, i18n } = useTranslation();
     const product = products.find(p => p.id === parseInt(id));
-    const [selectedVolume, setSelectedVolume] = useState(product?.volumes[0]);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [openAccordion, setOpenAccordion] = useState('description');
 
@@ -216,34 +215,8 @@ const ProductDetail = () => {
                             ))}
                         </div>
 
-                        {/* Select Variant */}
-                        <div>
-                            <span style={{ display: 'block', fontSize: '0.9rem', fontWeight: 600, marginBottom: '1rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                                {i18n.language === 'ar' ? 'اختر الحجم' : 'Choisir le format'}
-                            </span>
-                            <div style={{ display: 'flex', gap: '1rem' }}>
-                                {product.volumes.map(vol => (
-                                    <button
-                                        key={vol}
-                                        onClick={() => setSelectedVolume(vol)}
-                                        style={{
-                                            flex: 1,
-                                            padding: '1rem',
-                                            borderRadius: 'var(--radius-sm)',
-                                            border: '1.5px solid',
-                                            borderColor: selectedVolume === vol ? 'var(--black)' : 'var(--border-color)',
-                                            backgroundColor: selectedVolume === vol ? 'var(--black)' : 'transparent',
-                                            color: selectedVolume === vol ? 'var(--white)' : 'var(--black)',
-                                            fontWeight: 600,
-                                            fontSize: '0.9rem',
-                                            transition: 'all 0.2s ease'
-                                        }}
-                                    >
-                                        {vol}
-                                    </button>
-                                ))}
-                            </div>
-                        </div>
+                        {/* Integrated Selection & Order Form */}
+                        <OrderForm product={product} />
 
                         {/* Accordions */}
                         <div style={{ marginTop: '1rem' }}>
@@ -265,11 +238,6 @@ const ProductDetail = () => {
                                 isOpen={openAccordion === 'usage'}
                                 onClick={() => setOpenAccordion(openAccordion === 'usage' ? null : 'usage')}
                             />
-                        </div>
-
-                        {/* Fixed Order Form */}
-                        <div style={{ marginTop: '1rem' }}>
-                            <OrderForm product={product} variation={selectedVolume} />
                         </div>
                     </div>
                 </div>
