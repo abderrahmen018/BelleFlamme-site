@@ -73,8 +73,8 @@ const ProductDetail = () => {
     const benefits = [
         { icon: <Clock size={20} />, text: i18n.language === 'ar' ? 'ثبات طويل' : 'Longue Tenue' },
         { icon: <Sparkles size={20} />, text: i18n.language === 'ar' ? 'جودة ممتازة' : 'Qualité Premium' },
-        { icon: <Droplets size={20} />, text: i18n.language === 'ar' ? 'مكونات طبيعية' : 'Ingrédients Naturels' },
-        { icon: <ShieldCheck size={20} />, text: i18n.language === 'ar' ? 'أصلي ١٠٠٪' : '100% Authentique' }
+        //{ icon: <Droplets size={20} />, text: i18n.language === 'ar' ? 'مكونات طبيعية' : 'Ingrédients Naturels' },
+        //{ icon: <ShieldCheck size={20} />, text: i18n.language === 'ar' ? 'أصلي ١٠٠٪' : '100% Authentique' }
     ];
 
     return (
