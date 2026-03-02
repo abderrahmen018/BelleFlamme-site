@@ -49,11 +49,16 @@ const ProductCard = ({ product }) => {
                     </div>
                 </div>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', padding: '0 0.5rem 0.5rem' }}>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', gap: '0.5rem' }}>
-                        <h3 style={{ fontSize: '1rem', fontWeight: 600, letterSpacing: '0.01em', margin: 0 }}>{product.name}</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', padding: '0 0.5rem 0.5rem' }}>
+                    <h3 style={{ fontSize: '1rem', fontWeight: 600, letterSpacing: '0.01em', margin: 0, lineHeight: 1.3 }}>
+                        {product.name}
+                    </h3>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.35rem' }}>
+                        <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', margin: 0 }}>
+                            {t(`categories.${product.category}`)}
+                        </p>
                         <span style={{
-                            fontSize: '0.875rem',
+                            fontSize: '0.8rem',
                             fontWeight: 700,
                             backgroundColor: 'var(--black)',
                             color: 'var(--white)',
@@ -65,9 +70,6 @@ const ProductCard = ({ product }) => {
                             {product.volumes[0].price.toLocaleString()} {product.currency}
                         </span>
                     </div>
-                    <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
-                        {t(`categories.${product.category}`)}
-                    </p>
                 </div>
             </Link>
         </motion.div>
