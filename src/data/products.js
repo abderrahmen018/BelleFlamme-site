@@ -64,10 +64,7 @@ export const products = [
       "https://fimgs.net/mdimg/perfume-social-cards/fr-p_c_9828.jpeg"
     ],
     volumes: [
-      { size: "100ml", price: 65000 },
-      { size: "200ml", price: 95000 },
-      { size: "300ml", price: 125000 },
-      { size: "400ml", price: 155000 }
+      { size: "100ml", price: 65000 }
     ]
   }
 ];
