@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 import { User, Phone, MapPin, ShoppingCart, CheckCircle, Package } from 'lucide-react';
+import emailjs from '@emailjs/browser';
 import { WILAYAS, SHIPPING_FEES } from '../data/shipping';
 
 const OrderForm = ({ product }) => {
     const { i18n } = useTranslation();
+    const navigate = useNavigate();
     const isAr = i18n.language === 'ar';
 
     const [submitted, setSubmitted] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [selectedVariant, setSelectedVariant] = useState(product?.volumes?.[0]?.size || '');
     const [formData, setFormData] = useState({
         name: '',
@@ -23,18 +27,55 @@ const OrderForm = ({ product }) => {
     const subtotal = variantData.price * formData.quantity;
     const totalPrice = subtotal + shippingFee;
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log('Order Submitted:', {
-            product,
-            variant: selectedVariant,
-            price: variantData.price,
-            subtotal,
-            shipping: shippingFee,
-            total: totalPrice,
-            ...formData
-        });
-        setSubmitted(true);
+
+        // Validation du numéro de téléphone (Algérie: 05, 06, 07 suivi de 8 chiffres)
+        const phoneRegex = /^(05|06|07)[0-9]{8}$/;
+        if (!phoneRegex.test(formData.phone)) {
+            alert(isAr
+                ? 'يرجى إدخال رقم هاتف صحيح .'
+                : 'Veuillez entrer un numéro de téléphone valide .');
+            return;
+        }
+
+        if (isSubmitting) return;
+        setIsSubmitting(true);
+
+        // EmailJS Configuration from environment variables
+        const SERVICE_ID = import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_xxxxxxx';
+        const TEMPLATE_ID = import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_xxxxxxx';
+        const PUBLIC_KEY = import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'your_public_key';
+
+        const orderDetails = {
+            product_name: `${product.brand} ${product.name}`,
+            product_image: product.images?.[0],
+            selected_variant: selectedVariant,
+            quantity: formData.quantity,
+            customer_name: formData.name,
+            customer_phone: formData.phone,
+            customer_wilaya: formData.wilaya,
+            customer_city: formData.city,
+            subtotal: subtotal.toLocaleString(),
+            shipping_fee: shippingFee.toLocaleString(),
+            total_price: totalPrice.toLocaleString(),
+        };
+
+        try {
+            const response = await emailjs.send(
+                SERVICE_ID,
+                TEMPLATE_ID,
+                orderDetails,
+                PUBLIC_KEY
+            );
+            console.log('EmailJS Success:', response.status, response.text);
+            setSubmitted(true);
+        } catch (error) {
+            console.error('EmailJS Error:', error);
+            alert(isAr ? 'حدث خطأ أثناء إرسال الطلب. يرجى المحاولة مرة أخرى.' : 'Une erreur s\'est produite lors de l\'envoi de la commande. Veuillez réessayer.');
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     if (submitted) {
@@ -72,7 +113,7 @@ const OrderForm = ({ product }) => {
                     {isAr ? 'شكراً لثقتكم. سنتصل بك قريباً لتأكيد الطلب.' : 'Merci pour votre confiance. Notre équipe vous contactera sous peu.'}
                 </p>
                 <button
-                    onClick={() => setSubmitted(false)}
+                    onClick={() => navigate('/produits')}
                     className="btn btn-black"
                     style={{ marginTop: '2rem', width: '100%', borderRadius: '50px' }}
                 >
@@ -363,6 +404,7 @@ const OrderForm = ({ product }) => {
                     {/* SUBMIT BUTTON */}
                     <button
                         type="submit"
+                        disabled={isSubmitting}
                         className="order-submit-btn"
                         style={{
                             marginTop: '0.5rem',
@@ -371,23 +413,29 @@ const OrderForm = ({ product }) => {
                             fontSize: '1rem',
                             fontWeight: 800,
                             borderRadius: '8px',
-                            background: '#E53E3E',
+                            background: isSubmitting ? '#9CA3AF' : '#E53E3E',
                             color: '#fff',
                             border: 'none',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
                             gap: '0.75rem',
-                            cursor: 'pointer',
+                            cursor: isSubmitting ? 'not-allowed' : 'pointer',
                             transition: 'background 0.2s',
                         }}
-                        onMouseEnter={e => e.currentTarget.style.background = '#C53030'}
-                        onMouseLeave={e => e.currentTarget.style.background = '#E53E3E'}
+                        onMouseEnter={e => !isSubmitting && (e.currentTarget.style.background = '#C53030')}
+                        onMouseLeave={e => !isSubmitting && (e.currentTarget.style.background = '#E53E3E')}
                     >
-                        <ShoppingCart size={18} />
-                        {isAr
-                            ? `أتم طلبك - DA ${totalPrice.toLocaleString()}`
-                            : `Terminez votre achat -  DA ${totalPrice.toLocaleString()}`}
+                        {isSubmitting ? (
+                            <div className="spinner"></div>
+                        ) : (
+                            <>
+                                <ShoppingCart size={18} />
+                                {isAr
+                                    ? `أتم طلبك - DA ${totalPrice.toLocaleString()}`
+                                    : `Terminez votre achat -  DA ${totalPrice.toLocaleString()}`}
+                            </>
+                        )}
                     </button>
 
                     {/* COD badge */}
@@ -407,6 +455,17 @@ const OrderForm = ({ product }) => {
                         font-size: 0.9rem !important;
                         padding: 1rem !important;
                     }
+                }
+                .spinner {
+                    width: 20px;
+                    height: 20px;
+                    border: 3px solid rgba(255,255,255,0.3);
+                    border-radius: 50%;
+                    border-top-color: #fff;
+                    animation: spin 1s ease-in-out infinite;
+                }
+                @keyframes spin {
+                    to { transform: rotate(360deg); }
                 }
             `}</style>
         </>
