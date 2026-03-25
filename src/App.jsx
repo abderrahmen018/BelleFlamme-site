@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import Navbar from './components/Navbar';
@@ -13,7 +13,9 @@ import ScentPicker from './pages/ScentPicker';
 import { ArrowUp } from 'lucide-react';
 import './App.css';
 
-const ScrollToTop = () => {
+
+
+const ScrollToTopButton = () => {
   const [showButton, setShowButton] = useState(false);
 
   useEffect(() => {
@@ -70,6 +72,19 @@ const ScrollToTop = () => {
   );
 };
 
+const ScrollToTop = () => {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      window.scrollTo(0, 0);
+    }, 100);
+    return () => clearTimeout(timer);
+  }, [pathname]);
+
+  return null;
+};
+
 function App() {
   const { i18n } = useTranslation();
 
@@ -80,6 +95,7 @@ function App() {
 
   return (
     <div className="app">
+      <ScrollToTop />
       <Navbar />
       <main>
         <AnimatePresence mode="wait">
@@ -93,7 +109,7 @@ function App() {
           </Routes>
         </AnimatePresence>
       </main>
-      <ScrollToTop />
+      <ScrollToTopButton />
       <Footer />
     </div>
   );

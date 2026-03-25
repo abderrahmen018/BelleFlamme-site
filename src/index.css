@@ -91,7 +91,7 @@ button {
 
 @media (max-width: 768px) {
   .container {
-    padding: 0 1.5rem;
+    padding: 0 1rem;
   }
 }
 
@@ -145,12 +145,14 @@ button {
 }
 
 .section-padding {
-  padding: 8rem 0;
+  padding-top: 8rem;
+  padding-bottom: 8rem;
 }
 
 @media (max-width: 768px) {
   .section-padding {
-    padding: 5rem 0;
+    padding-top: 5rem;
+    padding-bottom: 5rem;
   }
 }
 
@@ -178,7 +180,7 @@ button {
   gap: 2rem;
   margin: 0 auto;
   grid-template-columns: repeat(5, 1fr);
-  padding: 1rem;
+  padding: 1rem 0;
 }
 
 @media (max-width: 1200px) {
@@ -198,6 +200,7 @@ button {
   .product-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
+    padding: 0.5rem 0;
   }
 }
 

@@ -47,6 +47,15 @@ const ProductCard = ({ product }) => {
                     <div style={{ position: 'absolute', top: '0.75rem', right: '0.75rem', padding: '0.25rem 0.6rem', backgroundColor: 'var(--white)', borderRadius: '4px', fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', boxShadow: 'var(--shadow-sm)' }}>
                         {product.brand}
                     </div>
+                    {product.isNew ? (
+                        <div style={{ position: 'absolute', top: '0.75rem', left: '0.75rem', padding: '0.25rem 0.6rem', backgroundColor: 'var(--black)', color: 'var(--white)', borderRadius: '4px', fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', boxShadow: 'var(--shadow-sm)' }}>
+                            Nouveau
+                        </div>
+                    ) : product.volumes[0].oldPrice ? (
+                        <div style={{ position: 'absolute', top: '0.75rem', left: '0.75rem', padding: '0.25rem 0.6rem', backgroundColor: '#e74c3c', color: 'var(--white)', borderRadius: '4px', fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', boxShadow: 'var(--shadow-sm)' }}>
+                            Promo
+                        </div>
+                    ) : null}
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem', padding: '0 0.5rem 0.5rem' }}>
@@ -57,18 +66,29 @@ const ProductCard = ({ product }) => {
                         <p style={{ fontSize: '0.875rem', color: 'var(--text-secondary)', margin: 0 }}>
                             {t(`categories.${product.category}`)}
                         </p>
-                        <span style={{
-                            fontSize: '0.8rem',
-                            fontWeight: 700,
-                            backgroundColor: 'var(--black)',
-                            color: 'var(--white)',
-                            padding: '0.15rem 0.5rem',
-                            borderRadius: '4px',
-                            whiteSpace: 'nowrap',
-                            flexShrink: 0,
-                        }}>
-                            {product.volumes[0].price.toLocaleString()} {product.currency}
-                        </span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                            {product.volumes[0].oldPrice && (
+                                <span style={{
+                                    fontSize: '0.75rem',
+                                    color: 'var(--text-secondary)',
+                                    textDecoration: 'line-through'
+                                }}>
+                                    {product.volumes[0].oldPrice.toLocaleString()} {product.currency}
+                                </span>
+                            )}
+                            <span style={{
+                                fontSize: '0.8rem',
+                                fontWeight: 700,
+                                backgroundColor: 'var(--black)',
+                                color: 'var(--white)',
+                                padding: '0.15rem 0.5rem',
+                                borderRadius: '4px',
+                                whiteSpace: 'nowrap',
+                                flexShrink: 0,
+                            }}>
+                                {product.volumes[0].price.toLocaleString()} {product.currency}
+                            </span>
+                        </div>
                     </div>
                 </div>
             </Link>
